@@ -1,0 +1,3 @@
+package com.takeaway.service.employee.http.serialization
+
+trait JsonCirceCompleteSerialization extends CirceSerialization with DateTimeSerialization
