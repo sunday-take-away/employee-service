@@ -1,10 +1,11 @@
 package com.takeaway.service.employee.utility
 
-import org.joda.time.DateTime
+import org.joda.time.{DateTime, LocalDate}
 import org.joda.time.format.DateTimeFormat
 
 object DateTimeUtility {
   val DEFAULT_DATE_TIME_VALUE_FORMAT = "dd.MM.yyyy HH:mm:ss"
+
 
   implicit class DateTimeFormatter(dateTime: DateTime) {
     def to_value(format: String = DEFAULT_DATE_TIME_VALUE_FORMAT): String = {
@@ -20,4 +21,5 @@ object DateTimeUtility {
       formatter.parseDateTime(dateTimeValue)
     }
   }
+
 }
