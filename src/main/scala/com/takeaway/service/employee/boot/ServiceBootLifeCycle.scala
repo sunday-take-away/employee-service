@@ -6,7 +6,7 @@ trait ServiceBootLifeCycle extends ServiceBoot {
 
   loadActorSystem(config)
 
-  loadRepositories()
+  loadRepositories(config)
 
   loadAkkaServices(system, config)
 

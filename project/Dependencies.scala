@@ -28,7 +28,12 @@ object Dependencies {
     "io.circe" %% "circe-parser" % circe_version
   )
 
+  val dataDependencies = Seq(
+    "org.mongodb.scala" %% "mongo-scala-driver" % mongo_version
+  )
+
   val serviceDependencies = baseDependencies ++
+                            dataDependencies ++
                             akkaDependencies ++
                             serializationDependencies ++
                             serviceTestDependencies

@@ -2,7 +2,7 @@ package com.takeaway.service.employee.utility
 
 import com.takeaway.service.employee.utility.LocalDateUtility._
 import org.joda.time.LocalDate
-import org.scalatest.{Matchers, WordSpecLike}
+import org.scalatest.{ Matchers, WordSpecLike }
 
 class LocalDateUtilitySpec extends WordSpecLike with Matchers {
 

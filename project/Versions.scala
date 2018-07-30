@@ -5,5 +5,6 @@ object Versions {
   lazy val akka_version = "2.5.14"
   lazy val akka_http_version = "10.1.3"
   lazy val circe_version = "0.9.3"
-	    
+  lazy val mongo_version = "2.1.0"
+
 }

@@ -11,7 +11,6 @@ import io.circe.generic.auto._
 
 import scala.concurrent.Future
 
-
 trait EmployeeRoute extends RouteBase {
 
   var employeeServiceCall: (Any) => Future[Any] = (actorMessage: Any) => {
@@ -32,29 +31,29 @@ trait EmployeeRoute extends RouteBase {
         }
       }
     } ~
-    path("employee" / Segment) { employeeId =>
-      get {
-        onSuccess(employeeServiceCall(GetEmployee(employeeId)).mapTo[GetEmployeeCompleted]) { result =>
-          complete(result.employeeResult)
-        }
-      } ~
-      post {
-        entity(as[Employee]) {
-          case employee =>
-            onSuccess(employeeServiceCall(UpdateEmployee(employee, employeeId)).mapTo[UpdateEmployeeCompleted]) { result =>
-              val employeeURI = s"/employee/${result.employeeId}"
-              respondWithHeader(Location(employeeURI)) {
-                complete(StatusCodes.OK)
-              }
+      path("employee" / Segment) { employeeId =>
+        get {
+          onSuccess(employeeServiceCall(GetEmployee(employeeId)).mapTo[GetEmployeeCompleted]) { result =>
+            complete(result.employeeResult)
+          }
+        } ~
+          post {
+            entity(as[Employee]) {
+              case employee =>
+                onSuccess(employeeServiceCall(UpdateEmployee(employee, employeeId)).mapTo[UpdateEmployeeCompleted]) { result =>
+                  val employeeURI = s"/employee/${result.employeeId}"
+                  respondWithHeader(Location(employeeURI)) {
+                    complete(StatusCodes.OK)
+                  }
+                }
             }
-        }
-      } ~
-      delete {
-        onSuccess(employeeServiceCall(DeleteEmployee(employeeId)).mapTo[DeleteEmployeeCompleted]) { _ =>
-            complete(StatusCodes.NoContent)
-        }
+          } ~
+          delete {
+            onSuccess(employeeServiceCall(DeleteEmployee(employeeId)).mapTo[DeleteEmployeeCompleted]) { _ =>
+              complete(StatusCodes.NoContent)
+            }
+          }
       }
-    }
   }
 
 }

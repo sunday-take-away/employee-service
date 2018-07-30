@@ -1,24 +1,23 @@
 package com.takeaway.service.employee.model
 
-import org.scalatest.{Matchers, WordSpecLike}
+import com.takeaway.service.employee.support.EmployeeTestSupport
+import org.scalatest.{ Matchers, WordSpecLike }
 
-class EmployeeSpec extends WordSpecLike with Matchers {
+class EmployeeSpec extends WordSpecLike with Matchers with EmployeeTestSupport {
 
   "An employee" must {
 
     "have full name" in {
-      val employee = Employee(None, None, Some("Eugene"), Some("Le Roux"), None, List())
+      val employee = Employee(None, None, Some("Eugene"), Some("Le Roux"), None, List(), None)
       employee.fullName shouldEqual "Eugene Le Roux"
     }
 
     "have full name as empty string when first and last name not set" in {
-      val employee = Employee(None, None, None, None, None, List())
-      employee.fullName shouldEqual ""
+      emptyTestEmployee.fullName shouldEqual ""
     }
 
     "indicate each property for to string" in {
-      val employee = Employee(None, None, None, None, None, List())
-      employee.toString shouldEqual "id:None email:None firstName:None lastName:None birthDay:None hobbies:List()"
+      emptyTestEmployee.toString shouldEqual "id:None email:None firstName:None lastName:None birthDay:None hobbies:List() created:None"
     }
 
   }

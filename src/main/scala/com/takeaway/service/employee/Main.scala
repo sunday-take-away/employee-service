@@ -14,8 +14,8 @@ import scala.concurrent.ExecutionContextExecutor
 
 object Main extends App with ServiceBootLifeCycle {
 
-  override def loadRepositories(): Unit = {
-    Repositories.initialize()
+  override def loadRepositories(config: Config): Unit = {
+    Repositories.initialize(config)
   }
 
   override def loadAkkaServices(system: ActorSystem, config: Config): Unit = {

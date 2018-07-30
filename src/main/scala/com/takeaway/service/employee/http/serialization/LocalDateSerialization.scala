@@ -2,7 +2,7 @@ package com.takeaway.service.employee.http.serialization
 
 import com.takeaway.service.employee.utility.LocalDateUtility._
 import io.circe.Decoder.Result
-import io.circe.{Decoder, Encoder, HCursor, Json}
+import io.circe.{ Decoder, Encoder, HCursor, Json }
 import org.joda.time.LocalDate
 
 trait LocalDateSerialization {
