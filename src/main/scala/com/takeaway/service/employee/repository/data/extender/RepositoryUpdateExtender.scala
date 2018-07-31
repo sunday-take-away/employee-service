@@ -3,7 +3,7 @@ package com.takeaway.service.employee.repository.data.extender
 import com.takeaway.service.employee.utility.StringUtility._
 import org.joda.time.LocalDate
 import org.mongodb.scala.bson.conversions.Bson
-import org.mongodb.scala.model.Updates.{set, unset}
+import org.mongodb.scala.model.Updates.{ set, unset }
 
 object RepositoryUpdateExtender {
 

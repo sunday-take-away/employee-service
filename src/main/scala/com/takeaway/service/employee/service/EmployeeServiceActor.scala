@@ -1,6 +1,6 @@
 package com.takeaway.service.employee.service
 
-import akka.actor.{Actor, ActorLogging, Props}
+import akka.actor.{ Actor, ActorLogging, Props }
 import com.takeaway.service.employee.model.Employee
 import com.takeaway.service.employee.repository.EmployeeRepository
 import com.takeaway.service.employee.repository.init.Repositories
