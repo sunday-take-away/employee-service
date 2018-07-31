@@ -1,6 +1,6 @@
 package com.takeaway.service.employee.service
 
-import com.takeaway.service.employee.support.{ActorSpec, EmployeeTestSupport}
+import com.takeaway.service.employee.support.{ ActorSpec, EmployeeTestSupport }
 import com.takeaway.service.employee.system.akka.extender.ActorSystemExtender._
 import org.scalatest.tagobjects.Slow
 

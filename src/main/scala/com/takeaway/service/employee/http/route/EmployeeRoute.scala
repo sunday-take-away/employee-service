@@ -65,7 +65,9 @@ trait EmployeeRoute extends RouteBase with RouteAuthenticator {
 
   @Path("/{employeeId}")
   @ApiOperation(value = "Update employee", httpMethod = "POST", response = classOf[String], authorizations = Array(new Authorization(value = "basicAuth")))
-  @ApiImplicitParams(Array(new ApiImplicitParam(name = "employee", value = "employee", required = true, dataTypeClass = classOf[Employee], paramType = "body")))
+  @ApiImplicitParams(Array(
+    new ApiImplicitParam(name = "employeeId", value = "Id of the employee", required = true, dataType = "string", paramType = "path"),
+    new ApiImplicitParam(name = "employee", value = "employee", required = true, dataTypeClass = classOf[Employee], paramType = "body")))
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "Return employee URI", response = classOf[String]),
     new ApiResponse(code = 500, message = "Internal server error")))
