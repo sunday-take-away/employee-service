@@ -13,7 +13,7 @@ class EmployeeRepositorySpec extends DatabaseBaseSpec with EmployeeTestSupport {
 
   "A employee repository" must {
 
-    "create new job in database" taggedAs Slow in {
+    "create new employee in database" taggedAs Slow in {
       val created = repository.create(testEmployee)
 
       //blocking only for testing
@@ -26,6 +26,32 @@ class EmployeeRepositorySpec extends DatabaseBaseSpec with EmployeeTestSupport {
       result.hobbies shouldEqual List("running", "climbing", "chess", "travel", "meeting interesting people")
       result.created should not be None
       result.id should not be None
+    }
+
+    "update existing employee in database" taggedAs Slow in {
+      val updatedEmployee = testEmployee.copy(lastName = Some("Else"))
+      val updated = repository.update(updatedEmployee)
+
+      //blocking only for testing
+      val result = Await.result(updated, 1.second)
+
+      result.email.get shouldEqual "eugene.le.roux@mail.com"
+      result.firstName.get shouldEqual "Eugene"
+      result.lastName.get shouldEqual "Else"
+      result.birthDay.get.to_value() shouldEqual "1977-06-29"
+      result.hobbies shouldEqual List("running", "climbing", "chess", "travel", "meeting interesting people")
+      result.created should not be None
+      result.id should not be None
+    }
+
+    "hard delete existing employee in database" taggedAs Slow in {
+      val updated = repository.deleteForId(testEmployeeId)
+
+      //blocking only for testing
+      val result = Await.result(updated, 1.second)
+
+      // employee was hard deleted (id is just confirmation)
+      result.get shouldEqual testEmployeeId
     }
 
   }

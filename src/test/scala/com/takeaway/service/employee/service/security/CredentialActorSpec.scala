@@ -6,17 +6,17 @@ import com.takeaway.service.employee.system.akka.extender.ActorSystemExtender._
 
 class CredentialActorSpec extends ActorSpec {
 
-  "A credential service actor" must {
+  "A credential actor" must {
 
     "find credential for username" taggedAs Slow in {
       val actor = system.lookup_existing_actor(CredentialActor.name)
 
-      actor ! FindCredentialForUsername("huge")
+      actor ! FindCredentialForUsername("admin")
 
       expectMsgPF() {
         case FindCredentialForUsernameComplete(credentialResult, username) =>
           credentialResult should not be None
-          username shouldEqual "huge"
+          username shouldEqual "admin"
       }
     }
 

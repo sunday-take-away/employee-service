@@ -9,7 +9,7 @@ import org.joda.time.DateTime
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.model.Updates._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 class EmployeeRepository(val dataProvider: MongoDataProvider) extends RepositoryBase[Employee] {
   val collection = initializeCollection("employee", new EmployeeCodec)
