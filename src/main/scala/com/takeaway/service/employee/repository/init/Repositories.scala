@@ -1,6 +1,6 @@
 package com.takeaway.service.employee.repository.init
 
-import com.takeaway.service.employee.repository.EmployeeRepository
+import com.takeaway.service.employee.repository.{ CredentialRepository, EmployeeRepository }
 import com.typesafe.config.Config
 
 object Repositories extends RepositoryInitializer {
@@ -9,7 +9,8 @@ object Repositories extends RepositoryInitializer {
     super.initialize(config)
 
     repositories = Map[String, AnyRef](
-      "EmployeeRepository" -> new EmployeeRepository(dataProvider))
+      "EmployeeRepository" -> new EmployeeRepository(dataProvider),
+      "CredentialRepository" -> new CredentialRepository(dataProvider))
   }
 
 }
