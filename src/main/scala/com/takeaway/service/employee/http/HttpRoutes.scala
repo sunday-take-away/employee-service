@@ -1,7 +1,11 @@
 package com.takeaway.service.employee.http
 
-trait HttpRoutes extends HttpRouteBase {
+import akka.http.scaladsl.server.Directives._
+import com.takeaway.service.employee.http.api.doc.SwaggerDocService
+import com.takeaway.service.employee.http.header.CORSHeaderHandler
 
-  allHttpRoutes = allHttpRoutes
+trait HttpRoutes extends HttpRouteBase with CORSHeaderHandler {
+
+  allHttpRoutes = corsHandler(allHttpRoutes ~ SwaggerDocService.routes)
 
 }

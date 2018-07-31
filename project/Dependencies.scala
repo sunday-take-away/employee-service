@@ -21,7 +21,6 @@ object Dependencies {
     "com.typesafe.akka" %% "akka-http-xml" % akka_http_version
   )
 
-
   val serializationDependencies = Seq(
     "io.circe" %% "circe-core" % circe_version,
     "io.circe" %% "circe-generic" % circe_version,
@@ -37,10 +36,17 @@ object Dependencies {
     "com.typesafe.akka" %% "akka-slf4j" % akka_version
   )
 
+  val swaggerDependencies = Seq(
+    "io.swagger" % "swagger-jaxrs" % "1.5.20",
+    "com.github.swagger-akka-http" %% "swagger-akka-http" % "0.14.1",
+    "javax.xml.bind" % "jaxb-api" % "2.3.0"
+  )
+
   val serviceDependencies = baseDependencies ++
                             dataDependencies ++
                             akkaDependencies ++
                             loggingDependencies ++
                             serializationDependencies ++
+                            swaggerDependencies ++
                             serviceTestDependencies
 }
