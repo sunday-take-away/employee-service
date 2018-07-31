@@ -32,9 +32,15 @@ object Dependencies {
     "org.mongodb.scala" %% "mongo-scala-driver" % mongo_version
   )
 
+  val loggingDependencies = Seq(
+    "ch.qos.logback" % "logback-classic" % "1.2.3",
+    "com.typesafe.akka" %% "akka-slf4j" % akka_version
+  )
+
   val serviceDependencies = baseDependencies ++
                             dataDependencies ++
                             akkaDependencies ++
+                            loggingDependencies ++
                             serializationDependencies ++
                             serviceTestDependencies
 }
