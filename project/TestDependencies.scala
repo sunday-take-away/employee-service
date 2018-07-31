@@ -4,7 +4,8 @@ import sbt._
 object TestDependencies {
 
   val testBaseDependencies = Seq(
-    "org.scalatest" %% "scalatest" % "3.0.5" % Test
+    "org.scalatest" %% "scalatest" % "3.0.5" % Test,
+    "org.slf4j" % "slf4j-simple" % "1.7.25" % Test
   )
 	
   val testAkkaDependencies = Seq(
