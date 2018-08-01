@@ -8,6 +8,8 @@ trait ServiceBootLifeCycle extends ServiceBoot {
 
   loadRepositories(config)
 
+  loadAdvancedMessagingQueues(config)
+
   loadAkkaServices(system, config)
 
   loadHttpServer(config, system, executor, materializer)

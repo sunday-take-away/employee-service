@@ -28,6 +28,8 @@ trait ServiceBoot extends App with SystemName {
     materializer = actorSystemLoader.materializer
   }
 
+  def loadAdvancedMessagingQueues(config: Config): Unit
+
   def loadRepositories(config: Config): Unit
 
   def loadAkkaServices(system: ActorSystem, config: Config): Unit

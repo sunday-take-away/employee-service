@@ -42,11 +42,16 @@ object Dependencies {
     "javax.xml.bind" % "jaxb-api" % "2.3.0"
   )
 
+  val amqpDependencies = Seq(
+    "com.lightbend.akka" %% "akka-stream-alpakka-amqp" % "0.20"
+  )
+
   val serviceDependencies = baseDependencies ++
                             dataDependencies ++
                             akkaDependencies ++
                             loggingDependencies ++
                             serializationDependencies ++
                             swaggerDependencies ++
+                            amqpDependencies ++
                             serviceTestDependencies
 }

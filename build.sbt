@@ -1,3 +1,4 @@
+import sbt.Keys._
 import sbt._
 
 name := "take-away-employee-service"
@@ -24,14 +25,11 @@ testOptions in Slow -= Tests.Argument("-l", "org.scalatest.tags.Slow")
 testOptions in Slow += Tests.Argument("-n", "org.scalatest.tags.Slow")
 
 
-//assembly
-mainClass in assembly := Some("com.takeaway.service.employee.Main")
-
-
 // docker-ize service
 enablePlugins(DockerPlugin)
 
 dockerfile in docker := {
+
   val artifact: File = assembly.value
   val artifactTargetPath = s"/app/${artifact.name}"
 
@@ -42,6 +40,7 @@ dockerfile in docker := {
     add(artifact, artifactTargetPath)
     entryPoint("java", "-jar", artifactTargetPath)
   }
+
 }
 
 imageNames in docker := Seq(

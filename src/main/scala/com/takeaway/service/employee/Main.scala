@@ -3,6 +3,7 @@ package com.takeaway.service.employee
 import akka.actor.ActorSystem
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
+import com.takeaway.service.employee.amqp.init.AdvancedMessagingQueues
 import com.takeaway.service.employee.boot.ServiceBootLifeCycle
 import com.takeaway.service.employee.http.HttpRoutes
 import com.takeaway.service.employee.http.boot.HttpStartup
@@ -16,6 +17,10 @@ object Main extends App with ServiceBootLifeCycle {
 
   override def loadRepositories(config: Config): Unit = {
     Repositories.initialize(config)
+  }
+
+  override def loadAdvancedMessagingQueues(config: Config): Unit = {
+    AdvancedMessagingQueues.initialize(config)
   }
 
   override def loadAkkaServices(system: ActorSystem, config: Config): Unit = {
