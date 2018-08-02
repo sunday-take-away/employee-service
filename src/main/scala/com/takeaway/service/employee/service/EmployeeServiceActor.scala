@@ -7,6 +7,8 @@ import com.takeaway.service.employee.repository.init.Repositories
 import com.takeaway.service.employee.service.amqp._
 import com.takeaway.service.employee.system.akka.extender.ActorContextExtender._
 
+import scala.concurrent.Future
+
 case class CreateEmployee(employee: Employee)
 case class CreateEmployeeCompleted(employeeId: String)
 
@@ -31,9 +33,9 @@ class EmployeeServiceActor extends Actor with ActorLogging {
       log.debug(s"creating new employee:'$employee'")
       val requester = sender()
       val operation = repository.create(employee)
-      operation.map { employee =>
-        messageQueueActor ! EmployeeCreated(employee)
-        requester ! CreateEmployeeCompleted(employee.id.get)
+      operation.map { createdEmployee =>
+        messageQueueActor ! EmployeeCreated(createdEmployee)
+        requester ! CreateEmployeeCompleted(createdEmployee.id.get)
       }
 
     case GetEmployee(employeeId) =>
@@ -46,17 +48,22 @@ class EmployeeServiceActor extends Actor with ActorLogging {
       log.debug(s"updating employee:'$employee'")
       val requester = sender()
       val operation = repository.update(employee)
-      operation.map { employee =>
-        messageQueueActor ! EmployeeUpdated(employee)
+      operation.map { uodatedEmployee =>
+        messageQueueActor ! EmployeeUpdated(uodatedEmployee)
         requester ! UpdateEmployeeCompleted(employeeId)
       }
 
     case DeleteEmployee(employeeId) =>
       log.debug(s"deleting employee for id:'$employeeId'")
       val requester = sender()
-      val operation = repository.deleteForId(employeeId)
-      operation.map { deletedEmployeeId =>
-        messageQueueActor ! EmployeeDeleted(deletedEmployeeId)
+
+      val operation: Future[(Option[String], Option[Employee])] = for {
+        findOperation <- repository.findById(Some(employeeId))
+        deleteOperation <- repository.deleteForId(employeeId)
+      } yield (deleteOperation, findOperation)
+
+      operation.map { a =>
+        messageQueueActor ! EmployeeDeleted(a._2.get)
         requester ! DeleteEmployeeCompleted(employeeId)
       }
   }

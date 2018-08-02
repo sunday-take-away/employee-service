@@ -20,9 +20,9 @@ class EmployeeMessageQueueActorSpec extends ActorSpec with EmployeeTestSupport {
     "send employee created message" taggedAs Slow in {
       val actor = system.lookup_existing_actor(EmployeeMessageQueueActor.name)
 
-      actor ! EmployeeCreated(testNoneCreatedEmployeeId)
+      actor ! EmployeeCreated(testEmployee)
 
-      expectNoMessage(5.seconds)
+      expectNoMessage(1.seconds)
     }
 
   }

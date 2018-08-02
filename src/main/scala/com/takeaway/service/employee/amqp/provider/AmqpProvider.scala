@@ -12,6 +12,8 @@ class AmqpProvider(connectionProvider: AmqpDetailsConnectionProvider, queueDecla
         .withDeclarations(queueDeclaration))
   }
 
+  def queueName = queueDeclaration.name
+
   def close() {
     if (connectionProvider != null) connectionProvider.get.close()
   }
