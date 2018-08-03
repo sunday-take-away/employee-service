@@ -1,7 +1,7 @@
 package com.takeaway.service.employee.http.api.doc
 
 import com.github.swagger.akka.SwaggerHttpService
-import com.takeaway.service.employee.http.route.{EchoRoute, EmployeeRoute}
+import com.takeaway.service.employee.http.route.{ EchoRoute, EmployeeRoute }
 import io.swagger.models.auth.BasicAuthDefinition
 
 object SwaggerDocService extends SwaggerHttpService {

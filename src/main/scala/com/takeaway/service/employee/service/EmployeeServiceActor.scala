@@ -1,10 +1,11 @@
 package com.takeaway.service.employee.service
 
-import akka.actor.{ Actor, ActorLogging, Props }
+import akka.actor.{ Actor, ActorLogging, ActorRef, Props }
 import com.takeaway.service.employee.model.Employee
 import com.takeaway.service.employee.repository.EmployeeRepository
 import com.takeaway.service.employee.repository.init.Repositories
 import com.takeaway.service.employee.service.amqp._
+import com.takeaway.service.employee.service.exception.EmployeeExistsException
 import com.takeaway.service.employee.system.akka.extender.ActorContextExtender._
 
 import scala.concurrent.Future
@@ -32,11 +33,14 @@ class EmployeeServiceActor extends Actor with ActorLogging {
     case CreateEmployee(employee) =>
       log.debug(s"creating new employee:'$employee'")
       val requester = sender()
-      val operation = repository.create(employee)
-      operation.map { createdEmployee =>
-        messageQueueActor ! EmployeeCreated(createdEmployee)
-        requester ! CreateEmployeeCompleted(createdEmployee.id.get)
-      }
+
+      checkEmailDoesNotExistForAnotherUser(employee, requester, () => {
+        val createOperation = repository.create(employee)
+        createOperation.map { createdEmployee =>
+          messageQueueActor ! EmployeeCreated(createdEmployee)
+          requester ! CreateEmployeeCompleted(createdEmployee.id.get)
+        }
+      })
 
     case GetEmployee(employeeId) =>
       log.debug(s"finding employee for id:'$employeeId'")
@@ -47,11 +51,14 @@ class EmployeeServiceActor extends Actor with ActorLogging {
     case UpdateEmployee(employee, employeeId) =>
       log.debug(s"updating employee:'$employee'")
       val requester = sender()
-      val operation = repository.update(employee.copy(id = Some(employeeId)))
-      operation.map { uodatedEmployee =>
-        messageQueueActor ! EmployeeUpdated(uodatedEmployee)
-        requester ! UpdateEmployeeCompleted(employeeId)
-      }
+
+      checkEmailDoesNotExistForAnotherUser(employee, requester, () => {
+        val updateOperation = repository.update(employee.copy(id = Some(employeeId)))
+        updateOperation.map { uodatedEmployee =>
+          messageQueueActor ! EmployeeUpdated(uodatedEmployee)
+          requester ! UpdateEmployeeCompleted(employeeId)
+        }
+      })
 
     case DeleteEmployee(employeeId) =>
       log.debug(s"deleting employee for id:'$employeeId'")
@@ -66,6 +73,17 @@ class EmployeeServiceActor extends Actor with ActorLogging {
         messageQueueActor ! EmployeeDeleted(df._2.get)
         requester ! DeleteEmployeeCompleted(employeeId)
       }
+  }
+
+  def checkEmailDoesNotExistForAnotherUser(employee: Employee, requester: ActorRef, successCall: () => Future[Unit]): Unit = {
+    val emailCheckOperation = repository.findForEmail(employee.email)
+    emailCheckOperation.map { existingEmployeeResult =>
+      if (existingEmployeeResult.isEmpty) {
+        successCall()
+      } else {
+        requester ! akka.actor.Status.Failure(new EmployeeExistsException(s"employee already exists for email:'${employee.email.get}'"))
+      }
+    }
   }
 
 }

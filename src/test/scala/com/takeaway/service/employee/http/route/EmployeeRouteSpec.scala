@@ -6,8 +6,9 @@ import akka.http.scaladsl.model.{ HttpEntity, StatusCodes }
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import akka.util.ByteString
-import com.takeaway.service.employee.service._
+import com.takeaway.service.employee.service.exception.EmployeeExistsException
 import com.takeaway.service.employee.service.security.FindCredentialForUsernameComplete
+import com.takeaway.service.employee.service.{ CreateEmployeeCompleted, DeleteEmployeeCompleted, GetEmployeeCompleted, UpdateEmployeeCompleted }
 import com.takeaway.service.employee.support.{ CredentialTestSupport, EmployeeTestSupport }
 import org.scalatest.{ BeforeAndAfterAll, Matchers, WordSpecLike }
 
@@ -31,6 +32,18 @@ class EmployeeRouteSpec extends WordSpecLike with ScalatestRouteTest with Matche
         status shouldEqual StatusCodes.Created
         contentType shouldEqual `text/plain(UTF-8)`
         header("Location") shouldBe Some(Location(s"/employee/$testEmployeeId"))
+      }
+    }
+
+    "fail when employee with another existing email is attempting to be created" in {
+      employeeServiceCall = (_) => { Future { akka.actor.Status.Failure(new EmployeeExistsException(s"employee already exists for email:'some-existing@email.com'")) } }
+
+      val jsonBodyContent = HttpEntity(`application/json`, """{"email":"eugene@mail.com","firstName":"Eugene","lastName":"Le Roux","birthDay":"1977-06-29","hobbies":["jogging","climbing","chess","travel","meeting interesting people"]}""")
+
+      Post("/employee", jsonBodyContent) ~> addCredentials(validCredentials) ~> employeeRoutes ~> check {
+        status.isSuccess() shouldBe false
+        // raises 500 but during complete binding employeeExceptionHandler will cause 409
+        status shouldEqual StatusCodes.InternalServerError
       }
     }
 

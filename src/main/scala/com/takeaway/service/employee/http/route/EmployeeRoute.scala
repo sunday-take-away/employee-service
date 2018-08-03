@@ -1,12 +1,15 @@
 package com.takeaway.service.employee.http.route
 
-import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.model.StatusCodes.Conflict
 import akka.http.scaladsl.model.headers.Location
+import akka.http.scaladsl.model.{ HttpResponse, StatusCodes }
 import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.ExceptionHandler
 import akka.pattern.ask
 import com.takeaway.service.employee.http.auth.RouteAuthenticator
 import com.takeaway.service.employee.model.Employee
 import com.takeaway.service.employee.service._
+import com.takeaway.service.employee.service.exception.EmployeeExistsException
 import com.takeaway.service.employee.system.akka.extender.ActorSystemExtender._
 import io.circe.generic.auto._
 import io.swagger.annotations._
@@ -22,12 +25,21 @@ trait EmployeeRoute extends RouteBase with RouteAuthenticator {
     system.lookup_existing_actor(EmployeeServiceActor.name) ? actorMessage
   }
 
-  val employeeRoutes = createEmployee ~ getEmployee ~ updateEmployee ~ deleteEmployee
+  implicit def employeeExceptionHandler: ExceptionHandler =
+    ExceptionHandler {
+      case eex: EmployeeExistsException =>
+        complete(HttpResponse(Conflict, entity = eex.getMessage))
+    }
+
+  val employeeRoutes = handleExceptions(employeeExceptionHandler) {
+    createEmployee ~ getEmployee ~ updateEmployee ~ deleteEmployee
+  }
 
   @ApiOperation(value = "Create employee", httpMethod = "POST", response = classOf[String], authorizations = Array(new Authorization(value = "basicAuth")))
   @ApiImplicitParams(Array(new ApiImplicitParam(name = "employee", value = "employee", required = true, dataTypeClass = classOf[Employee], paramType = "body")))
   @ApiResponses(Array(
     new ApiResponse(code = 201, message = "Description of creation", response = classOf[String], responseHeaders = Array(new ResponseHeader(name = "location", description = "URI Location of created employee", response = classOf[String]))),
+    new ApiResponse(code = 409, message = "Error when trying to create with existing data e.g.  other employee email", response = classOf[String]),
     new ApiResponse(code = 500, message = "Internal server error")))
   def createEmployee = {
     path("employee") {
@@ -70,6 +82,7 @@ trait EmployeeRoute extends RouteBase with RouteAuthenticator {
     new ApiImplicitParam(name = "employee", value = "employee", required = true, dataTypeClass = classOf[Employee], paramType = "body")))
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "status of response", response = classOf[String]),
+    new ApiResponse(code = 409, message = "Error when trying to create with existing data e.g.  other employee email", response = classOf[String]),
     new ApiResponse(code = 500, message = "Internal server error")))
   def updateEmployee = {
     path("employee" / Segment) { employeeId =>

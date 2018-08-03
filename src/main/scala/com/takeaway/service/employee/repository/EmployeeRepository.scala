@@ -35,7 +35,7 @@ class EmployeeRepository(val dataProvider: MongoDataProvider) extends Repository
     operation.map(x => x.head)
   }
 
-  def findByEmail(email: Option[String])(implicit executionContext: ExecutionContext): Future[Option[Employee]] = {
+  def findForEmail(email: Option[String])(implicit executionContext: ExecutionContext): Future[Option[Employee]] = {
     if (email.isEmpty) return Future { None }
     val operation = collection.find[Employee](equal("email", email.getOrElse(""))).toFuture()
     operation.map(x => x.headOption)

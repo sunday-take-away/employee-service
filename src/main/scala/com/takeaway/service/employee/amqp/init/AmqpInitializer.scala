@@ -12,7 +12,6 @@ trait AmqpInitializer {
   }
 
   def getQueueProvider: AmqpProvider = {
-    println("getting queue provider!")
     amqpProvider
   }
 }
