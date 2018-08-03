@@ -28,11 +28,8 @@ Creates a new employee (need to be authenticated). Location response header head
 
 Note: ID and CREATED do NOT need to be provided.
 
-Example
-* BASIC-AUTH = Basic YWRtaW46SGFja0FTbmFjaw==
-* JSON-DATA = {  \"email\": \"rowan.bean@icloud.com\",  \"firstName\": \"Rowan\",  \"lastName\": \"Bean\",  \"birthDay\": \"1966-04-01\",  \"hobbies\": [    \"laughing\"  ]}
 ```
-curl -i -X POST "http://localhost:8001/employee" -H  "accept: application/json" -H  "content-type: application/json" -H  "authorization: {BASIC-AUTH}" -d "{JSON-DATA}"
+curl -i -X POST "http://localhost:8001/employee" -H  "accept: application/json" -H  "content-type: application/json" -H  "authorization: Basic YWRtaW46SGFja0FTbmFjaw==" -d "{  \"email\": \"rowan.bean@icloud.com\",  \"firstName\": \"Rowan\",  \"lastName\": \"Bean\",  \"birthDay\": \"1966-04-01\",  \"hobbies\": [    \"laughing\"  ]}"
 ```
 
 ## Get Employee
@@ -43,18 +40,14 @@ Example
 ```
 curl "http://localhost:8001/employee/{ID}" -H  "content-type: application/json"
 ```
-curl "http://localhost:8001/employee/5b63d0262e40b456aa4dbeb6" -H  "content-type: application/json"
-
 
 ## Update Employee
 Update existing employee (need to be authenticated).
 
 Example
 * ID = 5b62f2b86f5e5d00010c355f
-* BASIC-AUTH = Basic YWRtaW46SGFja0FTbmFjaw==
-* JSON-DATA = {  \"id\": \"5b62f2b86f5e5d00010c355f\",  \"email\": \"rowan.bean@bbc.com\",  \"firstName\": \"Rowan\",  \"lastName\": \"Bean\",  \"birthDay\": \"1966-04-01\",  \"hobbies\": [ \"Joking\"  ], \"created\":\"02.08.2018 12:02:00\"}
 ```
-curl -X PUT "http://localhost:8001/employee/{ID}" -H  "accept: application/json" -H  "content-type: application/json" -H  "authorization: {BASIC-AUTH}" -d "{JSON-DATA}"
+curl -X PUT "http://localhost:8001/employee/{ID}" -H  "accept: application/json" -H  "content-type: application/json" -H  "authorization: Basic YWRtaW46SGFja0FTbmFjaw==" -d "{\"email\": \"rowan.bean@bbc.com\",  \"firstName\": \"Rowan\",  \"lastName\": \"Bean\",  \"birthDay\": \"1966-04-01\",  \"hobbies\": [ \"Joking\", \"Not Speaking\"  ] }"
 ```
 
 ## Delete Employee
@@ -62,7 +55,6 @@ Delete existing employee (need to be authenticated).
 
 Example
 * ID = 5b62f2b86f5e5d00010c355f
-* BASIC-AUTH = Basic YWRtaW46SGFja0FTbmFjaw==
 ```
-curl -X DELETE "http://localhost:8001/employee/{ID}" -H  "accept: application/json" -H  "content-type: application/json" -H  "authorization: {BASIC-AUTH}" 
+curl -X DELETE "http://localhost:8001/employee/{ID}" -H  "accept: application/json" -H  "content-type: application/json" -H  "authorization: Basic YWRtaW46SGFja0FTbmFjaw==" 
 ```
