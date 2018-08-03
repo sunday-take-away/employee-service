@@ -57,7 +57,7 @@ class EmployeeRouteSpec extends WordSpecLike with ScalatestRouteTest with Matche
       }
     }
 
-    "update employee and return employee URI" in {
+    "update employee and return status code" in {
       employeeServiceCall = (_) => { Future { UpdateEmployeeCompleted(testEmployeeId) } }
 
       val jsonBodyContent = HttpEntity(`application/json`, """{"email":"eugene.le.roux@mail.com","firstName":"Eugene","lastName":"Le Roux","birthDay":"1977-06-29","hobbies":["running","climbing","chess","travel","meeting interesting people"]}""")
@@ -66,7 +66,6 @@ class EmployeeRouteSpec extends WordSpecLike with ScalatestRouteTest with Matche
         status.isSuccess() shouldBe true
         status shouldEqual StatusCodes.OK
         contentType shouldEqual `text/plain(UTF-8)`
-        header("Location") shouldBe Some(Location(s"/employee/$testEmployeeId"))
       }
     }
 
