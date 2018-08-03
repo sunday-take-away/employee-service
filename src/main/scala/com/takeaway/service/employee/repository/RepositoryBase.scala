@@ -34,7 +34,7 @@ trait RepositoryBase[T <: Identifiable] extends Repository with RepositoryFilter
     operation.map(x => x.wasAcknowledged())
   }
 
-  def findById(id: Option[String])(implicit executionContext: ExecutionContext, ct: ClassTag[T]): Future[Option[T]] = {
+  def findById(id: String)(implicit executionContext: ExecutionContext, ct: ClassTag[T]): Future[Option[T]] = {
     if (id.isEmpty) return Future { None }
     val operation = collection.find[T](equal("_id", id.to_object_id)).toFuture()
     operation.map(x => x.headOption)

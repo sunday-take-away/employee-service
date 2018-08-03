@@ -28,6 +28,16 @@ class EmployeeRepositorySpec extends DatabaseBaseSpec with EmployeeTestSupport {
       result.id should not be None
     }
 
+    "retrieve existing employee in database" taggedAs Slow in {
+      val existing = repository.findById(testEmployeeId)
+
+      //blocking only for testing
+      val result = Await.result(existing, 1.second)
+
+      val employee = result.get
+      employee.id should not be None
+    }
+
     "update existing employee in database" taggedAs Slow in {
       val updatedEmployee = testEmployee.copy(lastName = Some("Else"))
       val updated = repository.update(updatedEmployee)
@@ -39,7 +49,7 @@ class EmployeeRepositorySpec extends DatabaseBaseSpec with EmployeeTestSupport {
       result.firstName.get shouldEqual "Eugene"
       result.lastName.get shouldEqual "Else"
       result.birthDay.get.to_value() shouldEqual "1977-06-29"
-      result.hobbies shouldEqual List("running", "climbing", "chess", "travel", "meeting interesting people")
+      result.hobbies shouldEqual List("meeting interesting people", "travel", "chess", "climbing", "running")
       result.created should not be None
       result.id should not be None
     }

@@ -22,7 +22,7 @@ object RepositoryUpdateExtender {
 
   implicit class StringListUpdateOperationExtender(value: List[String]) {
     def update_field(fieldName: String): Bson = {
-      if (value.isEmpty) unset(fieldName) else set(fieldName, value.head)
+      if (value.isEmpty) unset(fieldName) else set(fieldName, value)
     }
   }
 }

@@ -26,7 +26,18 @@ class EmployeeRepository(val dataProvider: MongoDataProvider) extends Repository
       employee.lastName.update_field("lastName"),
       employee.birthDay.update_field("birthDay"),
       employee.hobbies.update_field("hobbies"))
-    val operation = collection.updateOne(equal("_id", employee.id.to_object_id), combine(updateOperations: _*)).toFuture()
-    operation.map(_ => employee)
+
+    val operation = for {
+      update <- collection.updateOne(equal("_id", employee.id.to_object_id), combine(updateOperations: _*)).toFuture()
+      read <- findById(employee.id.get)
+    } yield read
+
+    operation.map(x => x.head)
+  }
+
+  def findByEmail(email: Option[String])(implicit executionContext: ExecutionContext): Future[Option[Employee]] = {
+    if (email.isEmpty) return Future { None }
+    val operation = collection.find[Employee](equal("email", email.getOrElse(""))).toFuture()
+    operation.map(x => x.headOption)
   }
 }

@@ -41,13 +41,13 @@ class EmployeeServiceActor extends Actor with ActorLogging {
     case GetEmployee(employeeId) =>
       log.debug(s"finding employee for id:'$employeeId'")
       val requester = sender()
-      val operation = repository.findById(Some(employeeId))
+      val operation = repository.findById(employeeId)
       operation.map(employee => requester ! GetEmployeeCompleted(employee, employeeId))
 
     case UpdateEmployee(employee, employeeId) =>
       log.debug(s"updating employee:'$employee'")
       val requester = sender()
-      val operation = repository.update(employee)
+      val operation = repository.update(employee.copy(id = Some(employeeId)))
       operation.map { uodatedEmployee =>
         messageQueueActor ! EmployeeUpdated(uodatedEmployee)
         requester ! UpdateEmployeeCompleted(employeeId)
@@ -58,12 +58,12 @@ class EmployeeServiceActor extends Actor with ActorLogging {
       val requester = sender()
 
       val operation: Future[(Option[String], Option[Employee])] = for {
-        findOperation <- repository.findById(Some(employeeId))
+        findOperation <- repository.findById(employeeId)
         deleteOperation <- repository.deleteForId(employeeId)
       } yield (deleteOperation, findOperation)
 
-      operation.map { a =>
-        messageQueueActor ! EmployeeDeleted(a._2.get)
+      operation.map { df =>
+        messageQueueActor ! EmployeeDeleted(df._2.get)
         requester ! DeleteEmployeeCompleted(employeeId)
       }
   }

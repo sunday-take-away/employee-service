@@ -24,14 +24,14 @@ trait EmployeeRoute extends RouteBase with RouteAuthenticator {
 
   val employeeRoutes = createEmployee ~ getEmployee ~ updateEmployee ~ deleteEmployee
 
-  @ApiOperation(value = "Create employee", httpMethod = "PUT", response = classOf[String], authorizations = Array(new Authorization(value = "basicAuth")))
+  @ApiOperation(value = "Create employee", httpMethod = "POST", response = classOf[String], authorizations = Array(new Authorization(value = "basicAuth")))
   @ApiImplicitParams(Array(new ApiImplicitParam(name = "employee", value = "employee", required = true, dataTypeClass = classOf[Employee], paramType = "body")))
   @ApiResponses(Array(
-    new ApiResponse(code = 201, message = "Return employee URI", response = classOf[String]),
+    new ApiResponse(code = 201, message = "Description of creation", response = classOf[String], responseHeaders = Array(new ResponseHeader(name = "location", description = "URI Location of created employee", response = classOf[String]))),
     new ApiResponse(code = 500, message = "Internal server error")))
   def createEmployee = {
     path("employee") {
-      put {
+      post {
         authenticateBasicAsync(realm = "secure", authenticatorCallback) { credential =>
           entity(as[Employee]) {
             case employee =>
@@ -64,24 +64,21 @@ trait EmployeeRoute extends RouteBase with RouteAuthenticator {
   }
 
   @Path("/{employeeId}")
-  @ApiOperation(value = "Update employee", httpMethod = "POST", response = classOf[String], authorizations = Array(new Authorization(value = "basicAuth")))
+  @ApiOperation(value = "Update employee", httpMethod = "PUT", response = classOf[String], authorizations = Array(new Authorization(value = "basicAuth")))
   @ApiImplicitParams(Array(
     new ApiImplicitParam(name = "employeeId", value = "Id of the employee", required = true, dataType = "string", paramType = "path"),
     new ApiImplicitParam(name = "employee", value = "employee", required = true, dataTypeClass = classOf[Employee], paramType = "body")))
   @ApiResponses(Array(
-    new ApiResponse(code = 200, message = "Return employee URI", response = classOf[String]),
+    new ApiResponse(code = 200, message = "status of response", response = classOf[String]),
     new ApiResponse(code = 500, message = "Internal server error")))
   def updateEmployee = {
     path("employee" / Segment) { employeeId =>
-      post {
+      put {
         authenticateBasicAsync(realm = "secure", authenticatorCallback) { credential =>
           entity(as[Employee]) {
             case employee =>
               onSuccess(employeeServiceCall(UpdateEmployee(employee, employeeId)).mapTo[UpdateEmployeeCompleted]) { result =>
-                val employeeURI = s"/employee/${result.employeeId}"
-                respondWithHeader(Location(employeeURI)) {
-                  complete(StatusCodes.OK)
-                }
+                complete(StatusCodes.OK)
               }
           }
         }
