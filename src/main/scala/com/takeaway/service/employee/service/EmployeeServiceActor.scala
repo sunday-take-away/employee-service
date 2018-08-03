@@ -78,7 +78,7 @@ class EmployeeServiceActor extends Actor with ActorLogging {
   def checkEmailDoesNotExistForAnotherUser(employee: Employee, requester: ActorRef, successCall: () => Future[Unit]): Unit = {
     val emailCheckOperation = repository.findForEmail(employee.email)
     emailCheckOperation.map { existingEmployeeResult =>
-      if (existingEmployeeResult.isEmpty) {
+      if (existingEmployeeResult.isEmpty || existingEmployeeResult.head.id == employee.id) {
         successCall()
       } else {
         requester ! akka.actor.Status.Failure(new EmployeeExistsException(s"employee already exists for email:'${employee.email.get}'"))

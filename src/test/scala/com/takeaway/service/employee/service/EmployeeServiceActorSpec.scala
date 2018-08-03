@@ -19,6 +19,14 @@ class EmployeeServiceActorSpec extends ActorSpec with EmployeeTestSupport {
       }
     }
 
+    "not be able to create new employee with another's email" taggedAs Slow in {
+      val actor = system.lookup_existing_actor(EmployeeServiceActor.name)
+
+      actor ! CreateEmployee(testEmployee.copy(email = testNoneCreatedEmployeeId.email))
+
+      expectMsgType[akka.actor.Status.Failure]
+    }
+
     "get existing employee" taggedAs Slow in {
       val actor = system.lookup_existing_actor(EmployeeServiceActor.name)
 
@@ -43,6 +51,16 @@ class EmployeeServiceActorSpec extends ActorSpec with EmployeeTestSupport {
         case UpdateEmployeeCompleted(employeeId) =>
           employeeId should not be None
       }
+    }
+
+    "not be able to update existing employee with another's email" taggedAs Slow in {
+      val actor = system.lookup_existing_actor(EmployeeServiceActor.name)
+
+      val updatedEmployee = testEmployee.copy(firstName = Some("Bean"), email = testNoneCreatedEmployeeId.email)
+
+      actor ! UpdateEmployee(updatedEmployee, testEmployeeId)
+
+      expectMsgType[akka.actor.Status.Failure]
     }
 
     "delete existing employee" taggedAs Slow in {

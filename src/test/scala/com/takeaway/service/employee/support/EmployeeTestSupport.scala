@@ -6,7 +6,7 @@ import org.joda.time.LocalDate
 
 trait EmployeeTestSupport {
 
-  val testEmployeeId = "5b63d0262e40b456aa4dbeb6"
+  val testEmployeeId = "5b6442e563a305282974fa5b"
 
   val testEmployee = Employee(Some(testEmployeeId), Some("eugene.le.roux@mail.com"), Some("Eugene"), Some("Le Roux"), Some(new LocalDate(1977, 6, 29)), List("running", "climbing", "chess", "travel", "meeting interesting people"), Some("27.06.2018 10:33:12".to_date()))
 
